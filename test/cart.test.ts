@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   addItem,
   discountPercent,
+  parseItem,
   shippingCents,
   totalCents,
   type Cart,
@@ -49,4 +50,31 @@ test("adding the same sku merges quantities", () => {
   );
   assert.equal(cart.items.length, 1);
   assert.equal(cart.items[0].qty, 3);
+});
+
+test("parseItem accepts valid items and rejects bad money/qty", () => {
+  assert.deepEqual(parseItem({ sku: "a", priceCents: 100, qty: 2 }), {
+    sku: "a",
+    priceCents: 100,
+    qty: 2,
+  });
+  for (const bad of [
+    null,
+    "x",
+    { sku: "", priceCents: 100, qty: 1 },
+    { sku: "a", priceCents: 10.5, qty: 1 },
+    { sku: "a", priceCents: -1, qty: 1 },
+    { sku: "a", priceCents: "100", qty: 1 },
+    { sku: "a", priceCents: 100, qty: 0 },
+    { sku: "a", priceCents: 100, qty: NaN },
+  ]) {
+    assert.equal(parseItem(bad), null);
+  }
+});
+
+test("coupon applies before the free-shipping threshold", () => {
+  const over: Cart = { items: [{ sku: "a", priceCents: 5500, qty: 1 }], couponCode: "INTERN10" };
+  assert.equal(totalCents(over), 4950 + 499);
+  const exact: Cart = { items: [{ sku: "a", priceCents: 5000, qty: 1 }] };
+  assert.equal(shippingCents({ ...exact, couponCode: "BOGUS" }), 0);
 });

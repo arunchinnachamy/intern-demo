@@ -1,5 +1,11 @@
 import { createServer } from "node:http";
-import { addItem, shippingCents, totalCents, type Cart } from "./cart.js";
+import {
+  addItem,
+  parseItem,
+  shippingCents,
+  totalCents,
+  type Cart,
+} from "./cart.js";
 
 let cart: Cart = { items: [] };
 
@@ -20,7 +26,17 @@ const server = createServer(async (req, res) => {
   if (req.method === "POST" && req.url === "/cart/items") {
     let body = "";
     for await (const chunk of req) body += chunk;
-    const item = JSON.parse(body);
+    let item;
+    try {
+      item = parseItem(JSON.parse(body));
+    } catch {
+      item = null;
+    }
+    if (!item) {
+      res.statusCode = 400;
+      res.end(JSON.stringify({ error: "invalid item" }));
+      return;
+    }
     cart = addItem(cart, item);
     res.statusCode = 201;
     res.end(JSON.stringify(cart));

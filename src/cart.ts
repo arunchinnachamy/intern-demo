@@ -45,6 +45,17 @@ export function totalCents(cart: Cart): number {
   return discountedSubtotalCents(cart) + shippingCents(cart);
 }
 
+// Validates untrusted input; money must be integer cents, qty at least 1.
+export function parseItem(input: unknown): CartItem | null {
+  if (typeof input !== "object" || input === null) return null;
+  const { sku, priceCents, qty } = input as Record<string, unknown>;
+  if (typeof sku !== "string" || sku.trim() === "") return null;
+  if (!Number.isSafeInteger(priceCents) || (priceCents as number) < 0)
+    return null;
+  if (!Number.isSafeInteger(qty) || (qty as number) < 1) return null;
+  return { sku, priceCents: priceCents as number, qty: qty as number };
+}
+
 export function addItem(cart: Cart, item: CartItem): Cart {
   const existing = cart.items.find((i) => i.sku === item.sku);
   if (existing) {
