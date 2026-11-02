@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { addItem, totalCents, type Cart } from "./cart.js";
+import { addItem, shippingCents, totalCents, type Cart } from "./cart.js";
 
 let cart: Cart = { items: [] };
 
@@ -7,7 +7,13 @@ const server = createServer(async (req, res) => {
   res.setHeader("content-type", "application/json");
 
   if (req.method === "GET" && req.url === "/cart") {
-    res.end(JSON.stringify({ ...cart, totalCents: totalCents(cart) }));
+    res.end(
+      JSON.stringify({
+        ...cart,
+        shippingCents: shippingCents(cart),
+        totalCents: totalCents(cart),
+      }),
+    );
     return;
   }
 
