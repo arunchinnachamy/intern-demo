@@ -1,0 +1,20 @@
+{
+  "name": "intern-demo",
+  "version": "1.0.0",
+  "description": "Demo repo for The Agent Intern: Claude Code sub-agents, skills and hooks",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "node dist/server.js",
+    "test": "node --import tsx --test test/*.test.ts",
+    "format": "prettier --write .",
+    "clean": "node scripts/clean.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prettier": "^3.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "license": "MIT"
+}
