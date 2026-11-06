@@ -1,4 +1,23 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(npm run test *)",
+      "Bash(npm test)",
+      "Bash(npm run lint)",
+      "Bash(npm run clean)",
+      "Bash(git diff *)",
+      "Bash(git status)"
+    ],
+    "ask": ["Bash(git push *)"],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/*.pem)",
+      "Bash(curl *)",
+      "Bash(wget *)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -6,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.mjs\""
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard.sh\""
           }
         ]
       }
