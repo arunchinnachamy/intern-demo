@@ -6,7 +6,8 @@ A tiny TypeScript cart API plus a complete Claude Code setup you can copy into y
 
 | What | Where | Job |
 | --- | --- | --- |
-| CLAUDE.md | `CLAUDE.md` | **Suggests** – always-true house rules (kept short on purpose) |
+| AGENTS.md | `AGENTS.md` | **Shared rules** – read by Codex, and by Claude Code through the import in CLAUDE.md |
+| CLAUDE.md | `CLAUDE.md` | **Suggests** – `@AGENTS.md` on line one, plus Claude-only notes |
 | Skill | `.claude/skills/summarize-changes/` | **Teaches** – summarizes your diff and flags risks |
 | Skill | `.claude/skills/pr-prep/` | **Teaches** – the PR-prep crew conductor (`/pr-prep`) |
 | Sub-agent | `.claude/agents/code-reviewer.md` | **Delegates** – read-only reviewer in its own context |
@@ -29,8 +30,20 @@ echo '{"tool_input":{"command":"ls"}}'          | node .claude/hooks/block-rm.mj
 echo '{"tool_input":{"command":"rm -rf dist"}}' | node .claude/hooks/block-rm.mjs   # prints a deny decision
 ```
 
+## One rules file for Claude Code and Codex (`agents-md` branch)
+
+Codex reads `AGENTS.md`. Claude Code reads `CLAUDE.md`, and only falls back to `AGENTS.md` when no `CLAUDE.md` exists. So the shared rules live in `AGENTS.md`, and `CLAUDE.md` starts with `@AGENTS.md`, which imports it.
+
+Check each tool loaded it:
+
+```bash
+# Claude Code: run /context and look under Memory files, or ask for the test command
+# Codex:
+codex --ask-for-approval never "Summarize the current instructions."
+```
+
 ## The one rule
 
 **CLAUDE.md suggests, skills teach, sub-agents delegate, hooks enforce.**
 
-Channel: [youtube.com/@theagentintern](https://www.youtube.com/@theagentintern)
+Channel: ΔTheta, [youtube.com/@deltathetaai](https://www.youtube.com/@deltathetaai)
